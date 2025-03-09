@@ -1,8 +1,11 @@
 import DashboardNavbar from "@/components/dashboard-navbar";
 import { createClient } from "../../../supabase/server";
-import { InfoIcon, UserCircle } from "lucide-react";
 import { redirect } from "next/navigation";
 import { SubscriptionCheck } from "@/components/subscription-check";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import EquationSolver from "@/components/math-tools/equation-solver";
+import ChartPanel from "@/components/data-visualization/chart-panel";
+import CSVUpload from "@/components/data-import/csv-upload";
 
 export default async function Dashboard() {
   const supabase = await createClient();
@@ -18,32 +21,39 @@ export default async function Dashboard() {
   return (
     <SubscriptionCheck>
       <DashboardNavbar />
-      <main className="w-full">
-        <div className="container mx-auto px-4 py-8 flex flex-col gap-8">
-          {/* Header Section */}
-          <header className="flex flex-col gap-4">
-            <h1 className="text-3xl font-bold">Dashboard</h1>
-            <div className="bg-secondary/50 text-sm p-3 px-4 rounded-lg text-muted-foreground flex gap-2 items-center">
-              <InfoIcon size="14" />
-              <span>This is a protected page only visible to authenticated users</span>
-            </div>
+      <main className="w-full bg-gray-50 min-h-screen">
+        <div className="container mx-auto px-4 py-8">
+          <header className="mb-8">
+            <h1 className="text-3xl font-bold mb-2">
+              Math & Statistics Analysis Dashboard
+            </h1>
+            <p className="text-muted-foreground">
+              Perform mathematical calculations and visualize data with
+              interactive tools
+            </p>
           </header>
 
-          {/* User Profile Section */}
-          <section className="bg-card rounded-xl p-6 border shadow-sm">
-            <div className="flex items-center gap-4 mb-6">
-              <UserCircle size={48} className="text-primary" />
-              <div>
-                <h2 className="font-semibold text-xl">User Profile</h2>
-                <p className="text-sm text-muted-foreground">{user.email}</p>
-              </div>
-            </div>
-            <div className="bg-muted/50 rounded-lg p-4 overflow-hidden">
-              <pre className="text-xs font-mono max-h-48 overflow-auto">
-                {JSON.stringify(user, null, 2)}
-              </pre>
-            </div>
-          </section>
+          <Tabs defaultValue="math" className="w-full">
+            <TabsList className="grid w-full max-w-md grid-cols-3 mb-8">
+              <TabsTrigger value="math">Math Tools</TabsTrigger>
+              <TabsTrigger value="visualization">
+                Data Visualization
+              </TabsTrigger>
+              <TabsTrigger value="import">Data Import</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="math" className="space-y-4">
+              <EquationSolver />
+            </TabsContent>
+
+            <TabsContent value="visualization" className="space-y-4">
+              <ChartPanel />
+            </TabsContent>
+
+            <TabsContent value="import" className="space-y-4">
+              <CSVUpload />
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
     </SubscriptionCheck>
